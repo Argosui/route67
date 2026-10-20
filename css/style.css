@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  /* Cielo nocturno: morado oscuro que cae a negro azulado */
+  background: radial-gradient(ellipse at top, #1f0f3a 0%, #0d0820 45%, #05050c 100%);
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Press Start 2P", "Courier New", monospace;
+}
+
+#game {
+  /* Mantiene la proporción 13:16 (carretera 360 + tablero 160, por 640 de alto)
+     y ocupa todo el alto o ancho disponible */
+  height: min(100vh, calc(100vw * 16 / 13));
+  aspect-ratio: 13 / 16;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  /* Marco de maquinita con el brillo de un tubo CRT */
+  border: 4px solid #221c44;
+  border-radius: 14px;
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.18), 0 0 80px rgba(120, 60, 255, 0.25);
+  filter: saturate(1.15) contrast(1.05);
+  touch-action: none;
+  user-select: none;
+}
