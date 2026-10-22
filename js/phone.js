@@ -67,9 +67,9 @@ R67.phone = {
 
     // Pedido
     let y = s.y + 62;
-    this.label(ctx, "PEDIDO #" + String(6701 + i).padStart(5, "0"), x, y, 7, col.muted, "left");
+    this.label(ctx, R67.i18n.t("ORDER") + String(6701 + i).padStart(5, "0"), x, y, 7, col.muted, "left");
     this.label(ctx, night.miles.toFixed(1) + " MI", right, y, 7, col.accent, "right");
-    this.label(ctx, "ENTREGAR EN:", x, (y += 18), 7, col.accent, "left");
+    this.label(ctx, R67.i18n.t("DELIVER_TO"), x, (y += 18), 7, col.accent, "left");
     y += 2;
     for (const line of this.wrap(ctx, night.address, 8, width)) {
       this.label(ctx, line, x, (y += 14), 8, col.ink, "left");
@@ -82,19 +82,19 @@ R67.phone = {
     y += 14;
     ctx.fillStyle = col.danger;
     ctx.fillRect(x, y - 7, 56, 14);
-    this.label(ctx, "EN VIVO", x + 28, y + 1, 6, "#fff");
+    this.label(ctx, R67.i18n.t("LIVE"), x + 28, y + 1, 6, "#fff");
     if (Math.floor(t * 2) % 2 === 0) {
       ctx.fillStyle = col.danger;
       ctx.fillRect(x + 62, y - 2, 4, 4);
     }
-    this.label(ctx, "NOTICIAS 67", x + 72, y, 7, col.ink, "left");
+    this.label(ctx, R67.i18n.t("NEWS"), x + 72, y, 7, col.ink, "left");
     this.drawTyped(ctx, night.news, x, s.y + 156, width, col.ink, t);
     this.drawTicker(ctx, night.ticker, s.x, s.y + 246, s.w, t);
 
     // Controles: los de noches anteriores (o los que indique inherit) y,
     // resaltados, los que se estrenan hoy
     y = s.y + 270;
-    this.label(ctx, "CONTROLES", x, y, 7, col.accent, "left");
+    this.label(ctx, R67.i18n.t("CONTROLS"), x, y, 7, col.accent, "left");
     const shown = (night.inherit || [...Array(i).keys()]).concat([i]);
     for (const n of shown) {
       const fresh = n === i;
@@ -103,7 +103,7 @@ R67.phone = {
         this.label(ctx, key, x, y, 7, fresh ? col.accent : col.ink, "left");
         this.label(ctx, action, x + 100, y, 7, fresh ? col.accent : col.muted, "left");
         if (fresh && i > 0 && Math.floor(t * 3) % 2 === 0) {
-          this.label(ctx, "NUEVO", right, y, 6, col.danger, "right");
+          this.label(ctx, R67.i18n.t("NEW"), right, y, 6, col.danger, "right");
         }
       }
     }
@@ -151,7 +151,7 @@ R67.phone = {
     ctx.fillRect(bx, by, 3, 3);
     ctx.fillRect(bx + 3, by - 3, 3, 3);
 
-    const title = bonus ? ["ESCAPASTE", "CON VIDA"] : last ? ["ULTIMA", "ENTREGA"] : ["PAQUETE", "ENTREGADO"];
+    const title = R67.i18n.t(bonus ? "ESCAPED" : last ? "LAST_DELIVERY" : "DELIVERED");
     this.label(ctx, title[0], cx, s.y + 180, 14, color);
     this.label(ctx, title[1], cx, s.y + 200, 14, color);
     this.label(ctx, last ? "? ? ? ? ?" : "* * * * *", cx, s.y + 222, 12, col.accent);
@@ -176,7 +176,7 @@ R67.phone = {
       }
       this.label(ctx, o.label, cx, y + 1, 10, isSelected ? "#fff" : col.ink);
     });
-    this.label(ctx, "W/S: ELEGIR  ENTER: OK", cx, y0 + options.length * rowH - 4, 7, col.muted);
+    this.label(ctx, R67.i18n.t("HINT"), cx, y0 + options.length * rowH - 4, 7, col.muted);
   },
 
   // Fondo de la app: barra de estado y encabezado con el logo.
@@ -193,7 +193,7 @@ R67.phone = {
     // Barra de estado: hora, noche, señal y una batería que se agota noche a noche
     const y = s.y + 10;
     this.label(ctx, night.clock, x, y, 7, col.ink, "left");
-    const which = night.bonus ? "NOCHE " + (i + 1) : "NOCHE " + (i + 1) + "/" + total;
+    const which = R67.i18n.t("NIGHT") + " " + (i + 1) + (night.bonus ? "" : "/" + total);
     this.label(ctx, which, s.x + s.w / 2, y, 6, night.bonus ? col.danger : col.muted);
     const charge = Math.max(0, 1 - i / total);
     const low = charge < 0.3;
@@ -248,7 +248,7 @@ R67.phone = {
     ctx.rect(x, y - 7, w, 14);
     ctx.clip();
     ctx.font = "7px " + R67.config.FONT;
-    const msg = "ULTIMA HORA: " + str + "  ///  ";
+    const msg = R67.i18n.t("BREAKING") + str + "  ///  ";
     const loop = ctx.measureText(msg).width;
     const shift = (t * 40) % loop;
     for (let k = 0; k * loop < w + loop; k++) {

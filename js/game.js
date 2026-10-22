@@ -8,6 +8,7 @@
   ctx.imageSmoothingEnabled = false;
 
   const story = R67.story;
+  const t = (key) => R67.i18n.t(key);
 
   const state = {
     // "menu" | "playing" | "paused" | "over", "arriving" (frenando junto a la casa),
@@ -315,10 +316,10 @@
   // Al terminar la noche 5 el teléfono ofrece además la noche 6, recién desbloqueada
   function setEndingOptions(offerBonus) {
     const options = [
-      { label: "ELEGIR NOCHE", action: openLevels },
-      { label: "MENU", action: goToMenu },
+      { label: t("PICK_NIGHT"), action: openLevels },
+      { label: t("MENU"), action: goToMenu },
     ];
-    if (offerBonus) options.unshift({ label: "NOCHE 6", action: () => openNight(story.MAIN) });
+    if (offerBonus) options.unshift({ label: t("NIGHT") + " 6", action: () => openNight(story.MAIN) });
     SCREENS.ending.options = options;
     SCREENS.ending.y = options.length > 2 ? 450 : 480;
   }
@@ -343,26 +344,34 @@
 
   // Opciones del menú principal. Con la historia terminada, MODO HISTORIA abre el
   // selector de noches. Reiniciar solo aparece si ya hay avance, y pide confirmación
-  // para no perderlo por accidente.
+  // para no perderlo por accidente. La última opción cambia el idioma.
   function refreshMenu() {
     state.confirmReset = false;
     const options = [
       state.completed
-        ? { label: "MODO HISTORIA", action: openLevels, note: "ELEGIR NOCHE" }
-        : { label: "MODO HISTORIA", action: startStory, note: "NOCHE " + (state.nextNight + 1) },
-      { label: "MODO INFINITO", action: startGame },
+        ? { label: t("STORY"), action: openLevels, note: t("PICK_NIGHT") }
+        : { label: t("STORY"), action: startStory, note: t("NIGHT") + " " + (state.nextNight + 1) },
+      { label: t("ENDLESS"), action: startGame },
     ];
     if (state.nextNight > 0 || state.completed) {
-      options.push({ label: "REINICIAR NOCHES", action: resetStory });
+      options.push({ label: t("RESET"), action: resetStory });
     }
+    options.push({ label: t("LANGUAGE"), action: toggleLanguage });
     SCREENS.menu.options = options;
+  }
+
+  // Cambia el idioma y vuelve a armar los textos de todas las pantallas
+  function toggleLanguage() {
+    R67.i18n.toggle();
+    Object.assign(SCREENS, buildScreens());
+    refreshMenu();
   }
 
   function resetStory() {
     if (!state.confirmReset) {
       const option = SCREENS.menu.options[2];
-      option.label = "SEGURO?";
-      option.note = "ENTER DE NUEVO PARA BORRAR";
+      option.label = t("SURE");
+      option.note = t("SURE_NOTE");
       state.confirmReset = true;
       return;
     }
@@ -389,49 +398,53 @@
     state.phoneT = 0;
   }
 
-  // Pantallas con opciones: altura de la primera opción y lista de opciones
-  const SCREENS = {
-    menu: { y: 214, options: [] }, // las llena refreshMenu
-    // Las del teléfono quedan dentro de su pantalla
-    briefing: {
-      y: 480,
-      options: [
-        { label: "ACEPTAR PEDIDO", action: beginRun },
-        { label: "MENU", action: goToMenu },
-      ],
-    },
-    delivered: {
-      y: 480,
-      options: [
-        { label: "SIGUIENTE NOCHE", action: nextNight },
-        { label: "MENU", action: goToMenu },
-      ],
-    },
-    ending: { y: 480, options: [] }, // las llena setEndingOptions
-    // Una opción por noche, con su dirección debajo (la 6 incluida)
-    levels: {
-      y: 110,
-      options: story.NIGHTS.map((night, i) => ({
-        label: "NOCHE " + (i + 1),
-        note: night.address,
-        action: () => openNight(i),
-      })).concat([{ label: "VOLVER", action: goToMenu }]),
-    },
-    paused: {
-      y: 340,
-      options: [
-        { label: "CONTINUAR", action: resumeGame },
-        { label: "MENU", action: goToMenu },
-      ],
-    },
-    over: {
-      y: 440,
-      options: [
-        { label: "REINTENTAR", action: retry },
-        { label: "MENU", action: goToMenu },
-      ],
-    },
-  };
+  // Pantallas con opciones: altura de la primera opción y lista de opciones.
+  // Se vuelven a armar al cambiar de idioma.
+  function buildScreens() {
+    return {
+      menu: { y: 214, options: [] }, // las llena refreshMenu
+      // Las del teléfono quedan dentro de su pantalla
+      briefing: {
+        y: 480,
+        options: [
+          { label: t("ACCEPT"), action: beginRun },
+          { label: t("MENU"), action: goToMenu },
+        ],
+      },
+      delivered: {
+        y: 480,
+        options: [
+          { label: t("NEXT_NIGHT"), action: nextNight },
+          { label: t("MENU"), action: goToMenu },
+        ],
+      },
+      ending: { y: 480, options: [] }, // las llena setEndingOptions
+      // Una opción por noche, con su dirección debajo (la 6 incluida)
+      levels: {
+        y: 110,
+        options: story.nights().map((night, i) => ({
+          label: t("NIGHT") + " " + (i + 1),
+          note: night.address,
+          action: () => openNight(i),
+        })).concat([{ label: t("BACK"), action: goToMenu }]),
+      },
+      paused: {
+        y: 340,
+        options: [
+          { label: t("CONTINUE"), action: resumeGame },
+          { label: t("MENU"), action: goToMenu },
+        ],
+      },
+      over: {
+        y: 440,
+        options: [
+          { label: t("RETRY"), action: retry },
+          { label: t("MENU"), action: goToMenu },
+        ],
+      },
+    };
+  }
+  const SCREENS = buildScreens();
 
   // Pantalla de opciones activa, o null si se está jugando.
   // Tras chocar se espera a que termine la sacudida para no elegir por accidente.
@@ -455,7 +468,7 @@
     if (!option || option.disabled) return;
     // Mientras el teléfono escribe, la primera pulsación solo termina el texto
     if (isPhone()) {
-      const msg = R67.phone.message(state.mode, story.NIGHTS[state.night]);
+      const msg = R67.phone.message(state.mode, story.nights()[state.night]);
       if (!R67.phone.done(msg, state.phoneT)) {
         state.phoneT = R67.phone.SLIDE_TIME + msg.length / R67.phone.TYPE_SPEED;
         return;
@@ -648,13 +661,13 @@
       text(String(score()).padStart(5, "0"), 12, 22, 14, c.COLORS.text, "left");
       text("MAX " + String(state.best).padStart(5, "0"), c.WIDTH - 12, 22, 10, c.COLORS.accent, "right");
     } else {
-      let left = (state.phase === "escape" ? "ESCAPA " : "FALTAN ") + milesLeft().toFixed(1) + " MI";
-      if (state.mode === "arriving") left = "DESTINO";
-      else if (state.mode === "awakening") left = "CORRE";
-      else if (state.mode === "outrun") left = "LO PERDISTE";
+      let left = t(state.phase === "escape" ? "ESCAPE" : "LEFT") + milesLeft().toFixed(1) + " MI";
+      if (state.mode === "arriving") left = t("DESTINATION");
+      else if (state.mode === "awakening") left = t("RUN");
+      else if (state.mode === "outrun") left = t("LOST_IT");
       const danger = state.phase === "escape" || state.mode === "awakening";
       text(left, 12, 22, 10, danger ? c.COLORS.danger : c.COLORS.text, "left");
-      text("NOCHE " + (state.night + 1), c.WIDTH - 12, 22, 10, c.COLORS.accent, "right");
+      text(t("NIGHT") + " " + (state.night + 1), c.WIDTH - 12, 22, 10, c.COLORS.accent, "right");
     }
   }
 
@@ -671,20 +684,21 @@
   function drawOptions(screen) {
     R67.menu.draw(ctx, text, screen.options, state.selected, screen.y);
     const hintY = screen.y + screen.options.length * R67.menu.ROW_H - 4;
-    text("W/S: ELEGIR  ENTER: OK", c.WIDTH / 2, hintY, 7, "#b37a00");
+    text(t("HINT"), c.WIDTH / 2, hintY, 7, "#b37a00");
   }
 
   function drawMenu() {
-    // Velo suave para que se vea el carro estacionado en la estación
-    drawOverlay(0.4);
+    // Fondo negro liso para que el título y las opciones no compitan con la carretera
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, c.WIDTH, c.HEIGHT);
     const cx = c.WIDTH / 2;
     text("ROUTE", cx, 100, 36, c.COLORS.accent);
     text("67", cx, 150, 48, c.COLORS.danger);
     drawOptions(SCREENS.menu);
     // Debajo del arco de la estación, para dejar lugar a una tercera opción
-    text("FLECHAS O WASD: MOVER", cx, 432, 8, c.COLORS.text);
-    text("M: MUSICA   P: PAUSA", cx, 448, 8, c.COLORS.text);
-    text("L: LUCES   E: LIMPIA", cx, 464, 8, c.COLORS.text);
+    text(t("HELP_1"), cx, 432, 8, "#b37a00");
+    text(t("HELP_2"), cx, 448, 8, "#b37a00");
+    text(t("HELP_3"), cx, 464, 8, "#b37a00");
     text("MAX " + String(state.best).padStart(5, "0"), cx, 606, 10, c.COLORS.accent);
   }
 
@@ -693,15 +707,15 @@
     const cx = c.WIDTH / 2;
     text("GAME", cx, 210, 36, c.COLORS.danger);
     text("OVER", cx, 256, 36, c.COLORS.danger);
-    if (state.outOfFuel) text("SIN GASOLINA", cx, 296, 12, c.COLORS.accent);
-    else if (state.caught) text("TE ATRAPO", cx, 296, 12, c.COLORS.danger);
+    if (state.outOfFuel) text(t("OUT_OF_FUEL"), cx, 296, 12, c.COLORS.accent);
+    else if (state.caught) text(t("CAUGHT"), cx, 296, 12, c.COLORS.danger);
     if (state.night === null) {
-      text("PUNTOS " + String(score()).padStart(5, "0"), cx, 330, 12, c.COLORS.text);
+      text(t("POINTS") + String(score()).padStart(5, "0"), cx, 330, 12, c.COLORS.text);
       text("MAX    " + String(state.best).padStart(5, "0"), cx, 358, 12, c.COLORS.accent);
-      if (state.newBest && blink()) text("NUEVO RECORD!", cx, 394, 12, c.COLORS.accent);
+      if (state.newBest && blink()) text(t("NEW_RECORD"), cx, 394, 12, c.COLORS.accent);
     } else {
-      text("NOCHE " + (state.night + 1), cx, 330, 12, c.COLORS.accent);
-      text("FALTABAN " + milesLeft().toFixed(1) + " MI", cx, 358, 12, c.COLORS.text);
+      text(t("NIGHT") + " " + (state.night + 1), cx, 330, 12, c.COLORS.accent);
+      text(t("MISSED_BY") + milesLeft().toFixed(1) + " MI", cx, 358, 12, c.COLORS.text);
     }
     drawOptions(SCREENS.over);
   }
@@ -711,8 +725,8 @@
     drawOverlay(0.55);
     ctx.save();
     ctx.translate(0, Math.round(R67.phone.slide(state.phoneT)));
-    if (state.mode === "briefing") R67.phone.drawBriefing(ctx, story.NIGHTS, state.night, state.phoneT);
-    else R67.phone.drawDelivered(ctx, story.NIGHTS, state.night, state.phoneT);
+    if (state.mode === "briefing") R67.phone.drawBriefing(ctx, story.nights(), state.night, state.phoneT);
+    else R67.phone.drawDelivered(ctx, story.nights(), state.night, state.phoneT);
     const screen = SCREENS[state.mode];
     R67.phone.drawOptions(ctx, screen.options, state.selected, screen.y);
     ctx.restore();
@@ -728,7 +742,7 @@
       const x = p.x;
       const y = p.y - 90;
       const shade = ctx.createRadialGradient(x, y, 40, x, y, 260);
-      shade.addColorStop(0, "rgba(0, 0, 0, " + a * 0.2 + ")");
+      shade.addColorStop(0, "rgba(0, 0, 0, " + a * 0.1 + ")");
       shade.addColorStop(1, "rgba(0, 0, 0, " + a + ")");
       ctx.fillStyle = shade;
     } else {
@@ -739,15 +753,15 @@
 
   function drawLevels() {
     drawOverlay(0.95);
-    text("ELEGIR NOCHE", c.WIDTH / 2, 60, 18, c.COLORS.accent);
+    text(t("PICK_NIGHT"), c.WIDTH / 2, 60, 18, c.COLORS.accent);
     drawOptions(SCREENS.levels);
   }
 
   function drawPaused() {
     drawOverlay();
     const cx = c.WIDTH / 2;
-    text("MOTOR", cx, 230, 30, c.COLORS.accent);
-    text("APAGADO", cx, 272, 30, c.COLORS.accent);
+    text(t("ENGINE"), cx, 230, 30, c.COLORS.accent);
+    text(t("ENGINE_OFF"), cx, 272, 30, c.COLORS.accent);
     drawOptions(SCREENS.paused);
   }
 

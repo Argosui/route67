@@ -29,9 +29,9 @@ R67.dashboard = {
     this.drawSpeedometer(ctx, cx, 116, 58);
 
     const gear = info.driving ? String(Math.min(5, 1 + Math.floor(info.difficulty * 5))) : "N";
-    this.drawBox(ctx, x0 + 12, 200, 66, 54, "MARCHA", gear, 20);
+    this.drawBox(ctx, x0 + 12, 200, 66, 54, R67.i18n.t("GEAR"), gear, 20);
     const miles = (info.distance / c.MILE_PX).toFixed(1).padStart(5, "0");
-    this.drawBox(ctx, x0 + 86, 200, 66, 54, "MILLAS", miles, 9);
+    this.drawBox(ctx, x0 + 86, 200, 66, 54, R67.i18n.t("MILES"), miles, 9);
 
     this.drawLanes(ctx, cx, 272, info.lane, info.lights);
     this.drawRadio(ctx, x0 + 12, this.RADIO.y, w - 20, info.time);
@@ -39,9 +39,9 @@ R67.dashboard = {
     this.drawEngineButton(ctx, info.driving);
     this.drawWiperButton(ctx, info.raining, info.wiping, info.time);
 
-    this.label(ctx, "FLECHAS / WASD", cx, 568, 7, "#b37a00");
-    this.label(ctx, "M:RADIO  P:MOTOR", cx, 586, 7, "#b37a00");
-    this.label(ctx, "L:LUCES  E:LIMPIA", cx, 604, 7, "#b37a00");
+    this.label(ctx, R67.i18n.t("PANEL_1"), cx, 568, 7, "#b37a00");
+    this.label(ctx, R67.i18n.t("PANEL_2"), cx, 586, 7, "#b37a00");
+    this.label(ctx, R67.i18n.t("PANEL_3"), cx, 604, 7, "#b37a00");
   },
 
   // Zona de la radio dentro del tablero (también sirve para saber si la tocaron)
@@ -108,14 +108,14 @@ R67.dashboard = {
 
   drawEngineButton(ctx, on) {
     const light = on ? "#39ff14" : R67.config.COLORS.danger;
-    this.drawRoundButton(ctx, this.ENGINE, "MOTOR", on ? "ON" : "OFF", light);
+    this.drawRoundButton(ctx, this.ENGINE, R67.i18n.t("ENGINE"), on ? "ON" : "OFF", light);
   },
 
   // Con lluvia el aro parpadea en celeste para avisar que hay que limpiar
   drawWiperButton(ctx, raining, wiping, time) {
     const blink = raining && Math.floor(time * 3) % 2 === 0;
     const light = wiping ? "#7fdbff" : blink ? "#7fdbff" : raining ? "#2a6f8f" : "#221c44";
-    this.drawRoundButton(ctx, this.WIPER, "LIMPIA", wiping ? "<>" : "||", light);
+    this.drawRoundButton(ctx, this.WIPER, R67.i18n.t("WIPER"), wiping ? "<>" : "||", light);
   },
 
   drawRoundButton(ctx, button, title, text, light) {
@@ -208,9 +208,9 @@ R67.dashboard = {
     const bw = 20;
     const gap = 6;
     const total = c.LANES * bw + (c.LANES - 1) * gap;
-    this.label(ctx, "CARRIL", cx - total / 2, y, 7, "#b37a00", "left");
+    this.label(ctx, R67.i18n.t("LANE"), cx - total / 2, y, 7, "#b37a00", "left");
     // Testigo de las luces
-    this.label(ctx, "LUZ", cx + total / 2 - 12, y, 7, "#b37a00", "right");
+    this.label(ctx, R67.i18n.t("LIGHT"), cx + total / 2 - 12, y, 7, "#b37a00", "right");
     ctx.fillStyle = lightsOn ? "#ffd27a" : "#221c44";
     ctx.fillRect(cx + total / 2 - 8, y - 4, 8, 8);
     for (let i = 0; i < c.LANES; i++) {

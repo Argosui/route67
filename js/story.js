@@ -21,6 +21,7 @@ R67.story = {
   // Solo noche 6: bonus (va aparte), storm (llueve todo el nivel y caen rayos),
   //   escapeMiles y escapeSpeed (la huida tras despertar a la casa).
   // news: la precaución, contada como noticia. done: lo que dice la app al entregar.
+  // en: los mismos textos en inglés (ver i18n.js).
   NIGHTS: [
     {
       miles: 8,
@@ -39,6 +40,14 @@ R67.story = {
       ],
       rules: { lights: false, radio: false, rain: false, ghost: false },
       done: "EL ENCARGADO DEL MOTEL TE DIO LAS GRACIAS SIN ABRIR LA PUERTA. PROPINA: $2.",
+      en: {
+        address: "LUNA AZUL MOTEL, ROOM 6, MILE 12",
+        news:
+          "THE LAST STOP GAS STATION CLOSES EARLY AND THERE IS NO OTHER ON ROUTE 67. PICK UP THE GAS CANS YOU SEE ON THE ROAD OR YOU WILL BE STRANDED.",
+        ticker: "POTHOLES AND ROADWORK ALL ALONG THE NORTH STRETCH",
+        controls: [["ARROWS/WASD", "MOVE"], ["P", "ENGINE (PAUSE)"]],
+        done: "THE MOTEL MANAGER THANKED YOU WITHOUT OPENING THE DOOR. TIP: $2.",
+      },
     },
     {
       miles: 10,
@@ -46,7 +55,7 @@ R67.story = {
       place: "barn",
       speedStart: 280,
       speedMax: 650,
-      shade: 0.15,
+      shade: 0.1,
       clock: "00:13",
       address: "GRANJA HOLLOWAY, BUZON 23",
       news:
@@ -55,6 +64,14 @@ R67.story = {
       controls: [["L", "LUCES"]],
       rules: { lights: true, radio: false, rain: false, ghost: false },
       done: "DEJASTE LA CAJA EN EL BUZON. ALGO ADENTRO SE MOVIO. PROPINA: $5.",
+      en: {
+        address: "HOLLOWAY FARM, MAILBOX 23",
+        news:
+          "LOCALS REPORT ELECTRICAL FAILURES IN CARS CROSSING THE ROUTE AT NIGHT. IF YOUR HEADLIGHTS GO OUT, TURN THEM BACK ON RIGHT AWAY.",
+        ticker: "DRIVING ALONE IS NOT RECOMMENDED",
+        controls: [["L", "LIGHTS"]],
+        done: "YOU LEFT THE BOX IN THE MAILBOX. SOMETHING INSIDE MOVED. TIP: $5.",
+      },
     },
     {
       miles: 12,
@@ -62,7 +79,7 @@ R67.story = {
       place: "church",
       speedStart: 300,
       speedMax: 680,
-      shade: 0.28,
+      shade: 0.2,
       clock: "01:06",
       address: "IGLESIA SAN JUDAS, PUERTA TRASERA",
       news:
@@ -71,6 +88,14 @@ R67.story = {
       controls: [["M", "RADIO"]],
       rules: { lights: true, radio: true, rain: false, ghost: false },
       done: "EL SACERDOTE RECIBIO EL PAQUETE Y TE PIDIO QUE NO VUELVAS DE NOCHE. PROPINA: $10.",
+      en: {
+        address: "ST. JUDE CHURCH, BACK DOOR",
+        news:
+          "A STRANGE FOG COVERS THE ROUTE WHEN IT IS QUIET. WITNESSES SAY MUSIC KEEPS IT AWAY. IF THE RADIO CUTS OUT, TURN IT BACK ON.",
+        ticker: "SHADOWS SEEN BY THE ROADSIDE",
+        controls: [["M", "RADIO"]],
+        done: "THE PRIEST TOOK THE PACKAGE AND ASKED YOU NOT TO COME BACK AT NIGHT. TIP: $10.",
+      },
     },
     {
       miles: 14,
@@ -78,7 +103,7 @@ R67.story = {
       place: "lighthouse",
       speedStart: 320,
       speedMax: 710,
-      shade: 0.52,
+      shade: 0.32,
       clock: "02:21",
       address: "FARO VIEJO, MUELLE 4",
       news:
@@ -87,13 +112,21 @@ R67.story = {
       controls: [["E", "LIMPIA"]],
       rules: { lights: true, radio: true, rain: true, ghost: false },
       done: "NADIE CUIDA EL FARO DESDE HACE MUCHO. AUN ASI, SU LUZ SE PRENDIO CUANDO LLEGASTE. PROPINA: ???",
+      en: {
+        address: "OLD LIGHTHOUSE, PIER 4",
+        news:
+          "SUDDEN STORMS ARE EXPECTED. WATER ON THE WINDSHIELD WILL LEAVE YOU BLIND: USE THE WIPERS EVERY TIME IT RAINS.",
+        ticker: "STATION 67.0 IS STILL ON THE AIR",
+        controls: [["E", "WIPER"]],
+        done: "NOBODY HAS KEPT THE LIGHTHOUSE IN YEARS. STILL, ITS LIGHT CAME ON WHEN YOU ARRIVED. TIP: ???",
+      },
     },
     {
       miles: 16,
       house: "#6b5a7a",
       speedStart: 340,
       speedMax: 740,
-      shade: 0.66,
+      shade: 0.42,
       clock: "03:00",
       address: "LA CASA AL FINAL DE LA RUTA 67",
       news:
@@ -102,6 +135,14 @@ R67.story = {
       controls: [["CARRIL LILA", "CAMBIATE"]],
       rules: { lights: true, radio: true, rain: true, ghost: true },
       done: "EL CLIENTE NO FIRMO. LA APP DICE: ENTREGADO A LAS 03:00. ESA CASA ESTA VACIA DESDE 1967. GRACIAS POR MANEJAR CON RUTA EXPRESS.",
+      en: {
+        address: "THE HOUSE AT THE END OF ROUTE 67",
+        news:
+          "BREAKING: DRIVERS SEE A PALE FIGURE LUNGING AT CARS. WHEN YOUR LANE TURNS PURPLE, SWITCH LANES NOW.",
+        ticker: "NOBODY SIGNED FOR THIS ORDER",
+        controls: [["PURPLE LANE", "SWITCH"]],
+        done: "THE CUSTOMER NEVER SIGNED. THE APP SAYS: DELIVERED AT 03:00. THAT HOUSE HAS BEEN EMPTY SINCE 1967. THANK YOU FOR DRIVING WITH RUTA EXPRESS.",
+      },
     },
     {
       miles: 10,
@@ -112,7 +153,7 @@ R67.story = {
       escapeSpeed: [400, 760],
       speedStart: 340,
       speedMax: 760,
-      shade: 0.85,
+      shade: 0.52,
       clock: "03:33",
       address: "???",
       news:
@@ -122,8 +163,21 @@ R67.story = {
       controls: [["CARRIL ROJO", "CAMBIATE"]],
       rules: { lights: true, radio: true, rain: true, ghost: false },
       done: "LO DEJASTE ATRAS. AL AMANECER LA CASA YA NO ESTABA. LA APP SOLO DICE: PEDIDO DEVUELTO AL REMITENTE.",
+      en: {
+        address: "???",
+        news:
+          "THUNDERSTORM ALERT ALL ALONG ROUTE 67. LIGHTNING IS BLINDING DRIVERS. SOMETHING IS MOVING UNDER THE HOUSE AT THE END. IF IT WAKES UP, DO NOT STOP.",
+        ticker: "THIS ORDER SHOULD NOT EXIST",
+        controls: [["RED LANE", "SWITCH"]],
+        done: "YOU LEFT IT BEHIND. AT DAWN THE HOUSE WAS GONE. THE APP ONLY SAYS: ORDER RETURNED TO SENDER.",
+      },
     },
   ],
+
+  // Las noches con sus textos en el idioma elegido
+  nights() {
+    return this.NIGHTS.map((night) => R67.i18n.night(night));
+  },
 
   // Índice de la próxima noche a jugar
   load() {

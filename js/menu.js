@@ -1,5 +1,6 @@
 // Lista de opciones navegable, usada por el menú principal, la pausa y el game over.
 // Cada opción: { label, action, disabled?, note? }
+// La seleccionada va en verde y las demás en ámbar.
 R67.menu = {
   ROW_H: 40,
   DISABLED_COLOR: "#5a5a6e",
@@ -11,7 +12,7 @@ R67.menu = {
     options.forEach((o, i) => {
       const y = y0 + i * this.ROW_H;
       const isSelected = i === selected;
-      const color = o.disabled ? this.DISABLED_COLOR : isSelected ? c.COLORS.accent : c.COLORS.text;
+      const color = o.disabled ? this.DISABLED_COLOR : isSelected ? c.COLORS.text : c.COLORS.accent;
       text(isSelected ? "> " + o.label + " <" : o.label, cx, y, 12, color);
       if (o.note) text(o.note, cx, y + 16, 7, this.DISABLED_COLOR);
     });
